@@ -29,9 +29,7 @@ function Login() {
 
   const onLogin = async () => {
     let res = await login(username, password);
-    if (res?.success) {
-      localStorage.setItem("token", res.token);
-      localStorage.setItem("username", username);
+    if (res?.status) {
       context.onLogin();
     } else {
       message.error(res.message);

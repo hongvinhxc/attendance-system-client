@@ -1,53 +1,26 @@
-import { getToken } from "helpers/token";
+import { get, post } from "./base";
 
-const login = async (username: String, password: String) => {
-  let res = await fetch("/api/auth/login", {
-    method: "POST",
-    mode: "cors", // no-cors, *cors, same-origin
-    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: "same-origin", // include, *same-origin, omit
-    headers: {
-      "Content-Type": "application/json",
-    },
-    redirect: "follow", // manual, *follow, error
-    referrerPolicy: "no-referrer",
-    body: JSON.stringify({
-      username,
-      password,
-    }),
-  });
-  return res.json();
+const login = (username: String, password: String) => {
+  let body = {
+    username,
+    password,
+  };
+  let path = "auth/login";
+  let res = post(path, body);
+  return res;
 };
 
-const changePassword = async (
-  username: String,
+const changePassword = (
   password: String,
-  newPassword: String,
-  confirmNewPassword: String
+  newPassword: String
 ) => {
-  let res = await fetch("/api/auth/change-password", {
-    method: "POST",
-    mode: "cors", // no-cors, *cors, same-origin
-    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: "same-origin", // include, *same-origin, omit
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": getToken(),
-    },
-    redirect: "follow", // manual, *follow, error
-    referrerPolicy: "no-referrer",
-    body: JSON.stringify({
-      username,
-      password,
-      newPassword,
-      confirmNewPassword,
-    }),
-  });
-  if (res.status === 401) {
-    localStorage.removeItem("token");
-    window.location.reload();
-  }
-  return res.json();
+  let body = {
+    password,
+    newPassword
+  };
+  let path = "auth/change-password";
+  let res = post(path, body);
+  return res;
 };
 
 export { login, changePassword };
