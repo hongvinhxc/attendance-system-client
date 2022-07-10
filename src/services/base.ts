@@ -8,6 +8,7 @@ function build_request_url(path: string, params: Object) {
   let host = getHost();
   let param_arrays: string[] = [];
   for (const [key, value] of Object.entries(params)) {
+    if (!value) continue;
     param_arrays.push(`${key}=${value}`);
   }
   return `${host}/${path}?${param_arrays.join("&")}`;
@@ -40,14 +41,14 @@ async function request(
   if (res.status === 422) {
     let data = await res.json();
     return {
-        status: false,
-        message: data.message.json
-    }
+      status: false,
+      message: data.message.json,
+    };
   }
   return res.json();
 }
 
-function get(path: string, params: Object) {
+function get(path: string, params: Object = {}) {
   let requestInfo = build_request_url(path, params);
   return request(requestInfo, "GET");
 }
@@ -58,4 +59,16 @@ function post(path: string, body: Object) {
   return request(requestInfo, "POST", body);
 }
 
-export { get, post };
+function put(path: string, body: Object) {
+  let host = getHost();
+  let requestInfo = `${host}/${path}`;
+  return request(requestInfo, "PUT", body);
+}
+
+function del(path: string) {
+  let host = getHost();
+  let requestInfo = `${host}/${path}`;
+  return request(requestInfo, "DELETE");
+}
+
+export { get, post, put, del };

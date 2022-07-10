@@ -1,8 +1,12 @@
-import { AuthContext } from "../../context";
+import { AuthContext } from "context";
 import { useState, useContext } from "react";
 import { message } from "antd";
-import "./style.css";
+import "./style.scss";
 import { login } from "services/auth";
+
+import wave from "assets/images/wave.png";
+import bg from "assets/images/bg.svg";
+import avatar from "assets/images/avatar.svg";
 
 function Login() {
   const [focusU, setFocusU] = useState("");
@@ -44,14 +48,14 @@ function Login() {
 
   return (
     <div className="login-body">
-      <img alt="" className="wave" src="/img/wave.png" />
+      <img alt="" className="wave" src={wave} />
       <div className="container">
         <div className="img">
-          <img alt="" src="/img/bg.svg" />
+          <img alt="" src={bg} />
         </div>
         <div className="login-content">
           <form className="form-login">
-            <img alt="" src="/img/avatar.svg" />
+            <img alt="" src={avatar} />
             <h2 className="title">Welcome</h2>
             <div className={"input-div one " + focusU}>
               <div className="i">
@@ -86,7 +90,14 @@ function Login() {
                 />
               </div>
             </div>
-            <span className="link" onClick={() => console.log("click")}>
+            <span
+              className="link"
+              onClick={() =>
+                message.info(
+                  "Contact your company's system administrator to reset the password!"
+                )
+              }
+            >
               Forgot Password?
             </span>
             <input

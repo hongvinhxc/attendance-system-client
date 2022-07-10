@@ -1,0 +1,17 @@
+.logo {
+    padding: 10px 10px 10px 24px;
+
+    img {
+        width: 30px;
+    }
+
+    span {
+        font-weight: 600;
+        margin-left: 5px;
+    }
+}
+
+.ant-layout-header {
+    background: unset !important;
+    padding: 0px 20px !important;
+}

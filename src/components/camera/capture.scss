@@ -1,0 +1,22 @@
+.webcam-capture {
+    .preview-image {
+        border: 1px dashed #666666;
+        width: 640px;
+        height: 480px;
+
+        .no-image {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-style: italic;
+        }
+    }
+
+    .preview-title {
+        width: 640px;
+        line-height: 32px;
+        text-align: center;
+        font-weight: 500;
+    }
+}

@@ -10,17 +10,20 @@ const login = (username: String, password: String) => {
   return res;
 };
 
-const changePassword = (
-  password: String,
-  newPassword: String
-) => {
+const logout = () => {
+  let path = "auth/logout";
+  let res = get(path);
+  return res;
+};
+
+const changePassword = (password: String, new_password: String) => {
   let body = {
     password,
-    newPassword
+    new_password,
   };
   let path = "auth/change-password";
   let res = post(path, body);
   return res;
 };
 
-export { login, changePassword };
+export { login, logout, changePassword };
