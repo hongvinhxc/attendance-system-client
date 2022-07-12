@@ -29,10 +29,13 @@ const AddEditModal = ({ data, onClose, onReload }: Props) => {
   const [visible, setVisible] = useState(false);
   const [profileId, setProfileId] = useState("");
   const [form] = Form.useForm();
+  const imagesField = Form.useWatch("images", form);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [invalidForm, setInValidForm] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!data) setVisible(false);
@@ -42,10 +45,16 @@ const AddEditModal = ({ data, onClose, onReload }: Props) => {
         form.setFieldsValue(data);
         setProfileId(data._id);
         getProfileImages(data._id);
+      } else {
+        setProfileId("");
       }
     }
     // eslint-disable-next-line
   }, [data]);
+
+  useEffect(() => {
+    onFieldsChange({});
+  }, [imagesField]);
 
   const getProfileImages = async (id: string) => {
     let res = await profileService.getProfileImages(id);
@@ -81,11 +90,13 @@ const AddEditModal = ({ data, onClose, onReload }: Props) => {
     form
       .validateFields()
       .then((values) => {
+        setIsLoading(true);
         if (profileId) {
           onUpdateProfile(values);
         } else {
           onAddProfile(values);
         }
+        setIsLoading(false);
       })
       .catch((info) => {
         console.log("Validate Failed:", info);
@@ -132,8 +143,17 @@ const AddEditModal = ({ data, onClose, onReload }: Props) => {
   const onCancel = () => {
     form.resetFields();
     setFileList([]);
-    setProfileId("");
+    form.setFields([
+      {
+        name: "images",
+        value: {
+          fileList: [],
+        },
+        touched: false,
+      },
+    ]);
     onClose();
+    setInValidForm(true);
   };
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
@@ -189,8 +209,18 @@ const AddEditModal = ({ data, onClose, onReload }: Props) => {
         value: {
           fileList: [...fileList, uploadFile],
         },
+        touched: true,
       },
     ]);
+  };
+
+  const onFieldsChange = (values: any) => {
+    setInValidForm(
+      (!profileId
+        ? !form.isFieldsTouched(["name", "code", "position"], true)
+        : !form.isFieldsTouched()) ||
+        !!form.getFieldsError().filter(({ errors }) => errors.length).length
+    );
   };
 
   return (
@@ -203,6 +233,7 @@ const AddEditModal = ({ data, onClose, onReload }: Props) => {
         onCancel={() => onCancel()}
         width={1000}
         okText={profileId ? "Update" : "Create"}
+        okButtonProps={{ disabled: invalidForm || isLoading }}
       >
         <Form
           form={form}
@@ -216,6 +247,7 @@ const AddEditModal = ({ data, onClose, onReload }: Props) => {
           }}
           layout="horizontal"
           name="form_in_modal"
+          onFieldsChange={onFieldsChange}
         >
           <Form.Item
             name="name"

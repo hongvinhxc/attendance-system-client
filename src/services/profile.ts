@@ -8,19 +8,19 @@ type GetProfilesParams = {
   position?: String;
 };
 const getProfiles = (params: GetProfilesParams = {}) => {
-  let path = "profiles/";
+  let path = "profiles";
   let res = get(path, params);
   return res;
 };
 
 const addProfile = (params: GetProfilesParams = {}) => {
-  let path = "profiles/";
+  let path = "profiles";
   let res = post(path, params);
   return res;
 };
 
-const updateProfile = (id: string, params: GetProfilesParams = {}) => {
-  let path = "profiles/" + id;
+const updateProfile = (_id: string, params: GetProfilesParams = {}) => {
+  let path = "profiles/" + _id;
   let res = put(path, params);
   return res;
 };
