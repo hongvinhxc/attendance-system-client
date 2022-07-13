@@ -11,6 +11,7 @@ import {
 import { RcFile } from "antd/lib/upload";
 import WebcamCapture from "components/camera/capture";
 import { dataURLtoFile, getBase64 } from "helpers/file";
+import { isMobile } from "helpers/utils";
 import { useEffect, useState } from "react";
 import * as profileService from "services/profile";
 
@@ -54,6 +55,7 @@ const AddEditModal = ({ data, onClose, onReload }: Props) => {
 
   useEffect(() => {
     onFieldsChange({});
+    // eslint-disable-next-line
   }, [imagesField]);
 
   const getProfileImages = async (id: string) => {
@@ -299,7 +301,7 @@ const AddEditModal = ({ data, onClose, onReload }: Props) => {
                 {fileList.length >= 8 ? null : uploadButton}
               </Upload>
             </Form.Item>
-            {fileList.length >= 8 ? null : (
+            {fileList.length >= 8 || isMobile() ? null : (
               <WebcamCapture onCapture={onCapture}></WebcamCapture>
             )}
           </Form.Item>
