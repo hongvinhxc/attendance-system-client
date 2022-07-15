@@ -8,7 +8,7 @@ import { SelectInfo } from "rc-menu/lib/interface";
 import { Button, Col, MenuProps, message, Modal, Row } from "antd";
 import { Breadcrumb, Layout, Menu } from "antd";
 import React, { useContext, useEffect, useState } from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import logo from "assets/images/logo.png";
 import "./layout.scss";
 import { logout } from "services/auth";
@@ -60,6 +60,7 @@ function Main() {
   const [openKeys, setOpenKeys] = useState(["Mangement"]);
   const [keyPath, setKeyPath] = useState(["Profile", "Mangement"]);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     Modal.destroyAll();
@@ -95,7 +96,7 @@ function Main() {
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
       >
-        <div className="logo">
+        <div className="logo" onClick={() => navigate("/")}>
           <img src={logo} alt="logo" />
           {!collapsed && <span>Attendance Portal</span>}
         </div>

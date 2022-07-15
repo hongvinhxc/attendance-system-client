@@ -7,12 +7,14 @@ import "./style.scss";
 function Home() {
   const webcamRef = useRef<any>(null);
   const throttling = useRef(false);
+  const isNotDestroy = useRef(true);
 
   const capture = useCallback(() => {
     return webcamRef.current.getScreenshot();
   }, [webcamRef]);
 
   useEffect(() => {
+    isNotDestroy.current = true;
     const interval = setInterval(() => {
       if (!throttling.current) {
         getPredictFace();
@@ -21,11 +23,18 @@ function Home() {
 
     message.open({
       key: "title",
-      content: <div className="title">Hệ thống điểm danh bằng nhận diện khuôn mặt</div>,
+      content: (
+        <div className="title">Hệ thống điểm danh bằng nhận diện khuôn mặt</div>
+      ),
       duration: 0,
     });
 
-    return () => clearInterval(interval);
+    return () => {
+      message.destroy();
+      notification.destroy();
+      clearInterval(interval);
+      isNotDestroy.current = false;
+    };
     // eslint-disable-next-line
   }, []);
 
@@ -34,12 +43,11 @@ function Home() {
     const image = capture();
     let res = await detectFaceService.detectFace(image);
     throttling.current = false;
-    if (res.status) {
+    if (res.status && isNotDestroy.current) {
       for (let item of res.data) {
         notification.open({
           placement: "bottomRight",
           key: item.code,
-          duration: 0,
           message: (
             <div className="hello-message">
               <div className="name">

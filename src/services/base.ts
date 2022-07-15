@@ -35,6 +35,9 @@ async function request(
     requestInit.body = JSON.stringify(payload);
   }
   let res = await fetch(requestInfo, requestInit);
+  if (res.status === 500) {
+    return { status: false, message: "Internal Server Error" }
+  }
   if (res.status === 401) {
     window.location.href = "/login";
   }
