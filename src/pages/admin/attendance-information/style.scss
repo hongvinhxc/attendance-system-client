@@ -1,0 +1,46 @@
+.attendance-information {}
+
+.attendance-detail {
+    .current-month {
+        margin: 0px 10px;
+        padding: 0px 10px;
+        font-size: 18px;
+        border: 1px dashed #d9d9d9;
+    }
+
+    ul.events {
+        padding: 0px 20px 0px 0px;
+        margin-bottom: 0px;
+        list-style-type: none;
+
+        li {
+            color: #FFFF;
+            font-size: 11px;
+            padding: 0px 10px;
+            border-radius: 5px;
+            line-height: 13px;
+            height: 15px;
+            margin-bottom: 4px;
+
+            &.absence {
+                background: #ff3b3b;
+            }
+
+            &.late {
+                background: #faad14;
+            }
+
+            &.early {
+                background: #ff7875;
+            }
+
+            &.checkin {
+                background: #096dd9;
+            }
+
+            &.checkout {
+                background: #1890ff;
+            }
+        }
+    }
+}

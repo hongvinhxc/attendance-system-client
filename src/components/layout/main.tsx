@@ -33,14 +33,14 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem("Mangement", "Mangement", <SettingOutlined />, [
+  getItem("Management", "Management", <SettingOutlined />, [
     getItem(
       <NavLink to="/admin/profile-management">Profile</NavLink>,
       "Profile",
       <TeamOutlined />
     ),
     getItem(
-      <NavLink to="/admin/attendance-infomation">Attendance</NavLink>,
+      <NavLink to="/admin/attendance-information">Attendance</NavLink>,
       "Attendance",
       <ClockCircleOutlined />
     ),
@@ -54,15 +54,28 @@ const items: MenuItem[] = [
 
 const rootSubmenuKeys = ["Management"];
 
+const menuMap: any = {
+  "profile-management": ["Profile", "Management"],
+  "attendance-information": ["Attendance", "Management"],
+  "change-password": ["Change password"],
+};
+
 function Main() {
   const context = useContext(AuthContext);
   const [collapsed, setCollapsed] = useState(false);
-  const [openKeys, setOpenKeys] = useState(["Mangement"]);
-  const [keyPath, setKeyPath] = useState(["Profile", "Mangement"]);
+  const [openKeys, setOpenKeys] = useState<string[]>([]);
+  const [keyPath, setKeyPath] = useState<string[]>([]);
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
+    const paths = location.pathname.split("/");
+    setOpenKeys([menuMap[paths[2]]?.[1] || "Management"]);
+  }, []);
+
+  useEffect(() => {
+    const paths = location.pathname.split("/");
+    setKeyPath(menuMap[paths[2]] || ["Profile", "Management"]);
     Modal.destroyAll();
   }, [location]);
 
@@ -105,6 +118,7 @@ function Main() {
           defaultSelectedKeys={["Profile"]}
           openKeys={openKeys}
           onOpenChange={onOpenChange}
+          selectedKeys={[keyPath[0]]}
           onSelect={onSelect}
           mode="inline"
           items={items}

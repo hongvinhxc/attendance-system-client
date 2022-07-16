@@ -7,7 +7,8 @@ import Home from "./pages/home";
 import ProfileManagement from "pages/admin/profile-management";
 import Main from "components/layout/main";
 import ChangePassword from "pages/admin/change-password";
-import AttendanceInfomation from "pages/admin/attendance-infomation";
+import AttendanceInformation from "pages/admin/attendance-information";
+import AttendanceDetail from "pages/admin/attendance-information/detail";
 
 function RequireAuth({ children }: { children: JSX.Element }) {
   let auth = useContext(AuthContext);
@@ -52,7 +53,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<RequireAuth><Main/></RequireAuth>}>
             <Route path="/admin/profile-management" element={<ProfileManagement />} />
-            <Route path="/admin/attendance-infomation" element={<AttendanceInfomation />} />
+            <Route path="/admin/attendance-information">
+              <Route path="" element={<AttendanceInformation />}/>
+              <Route path=":id" element={<AttendanceDetail />}/>
+            </Route>
             <Route path="/admin/change-password" element={<ChangePassword />} />
             <Route path="/admin" element={<Navigate to="/admin/profile-management" replace />} />
             <Route path="/admin/*" element={<Navigate to="/admin/profile-management" replace />} />

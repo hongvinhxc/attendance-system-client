@@ -1,39 +1,40 @@
 import {
-  DeleteOutlined,
-  EditOutlined,
-  ExclamationCircleOutlined,
+  DownloadOutlined,
+  EyeOutlined,
   SearchOutlined,
-  UserAddOutlined,
 } from "@ant-design/icons";
 import {
   Button,
   Card,
+  DatePicker,
   Form,
   Input,
   message,
-  Modal,
   Pagination,
   PaginationProps,
   Row,
   Table,
   Tooltip,
 } from "antd";
-import React, { useEffect, useState } from "react";
 import { AlignType } from "rc-table/lib/interface";
-import * as profileService from "services/profile";
-import AddEditModal from "./addModal";
+import moment, { Moment } from "moment";
+import React, { useEffect, useState } from "react";
+import * as attendanceService from "services/attendance";
 import "./style.scss";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ProfileManagement: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [form] = Form.useForm();
   const [dataSource, setDataSource] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [searchValues, setSearchValues] = useState({});
+  const [searchValues, setSearchValues] = useState<any>({ month: moment() });
   const [pagination, setPagination] = useState({
     total: 0,
     current: 1,
     pageSize: 10,
   });
-  const [modalData, setModalData] = useState<any>(null);
 
   const columns = [
     {
@@ -60,23 +61,34 @@ const ProfileManagement: React.FC = () => {
       key: "position",
     },
     {
+      title: "Ngày nghỉ",
+      dataIndex: "absence",
+      key: "",
+      align: "center" as AlignType,
+    },
+    {
+      title: "Đi muộn",
+      dataIndex: "late",
+      key: "late",
+      align: "center" as AlignType,
+    },
+    {
+      title: "Về sớm",
+      dataIndex: "early",
+      key: "early",
+      align: "center" as AlignType,
+    },
+    {
       title: "Action",
+      align: "center" as AlignType,
       render: (text: string, record: object, index: number) => {
         return (
           <>
-            <Tooltip title="Edit">
+            <Tooltip title="View detail">
               <Button
                 type="link"
-                icon={<EditOutlined />}
-                onClick={() => onEditRow(record)}
-              />
-            </Tooltip>
-            <Tooltip title="Delete">
-              <Button
-                type="link"
-                icon={<DeleteOutlined />}
-                onClick={() => onDeleteRow(record)}
-                danger
+                icon={<EyeOutlined />}
+                onClick={() => onViewDetail(record)}
               />
             </Tooltip>
           </>
@@ -85,36 +97,24 @@ const ProfileManagement: React.FC = () => {
     },
   ];
 
-  const onEditRow = (row: object) => {
-    setModalData(row);
-  };
-
-  const onDeleteRow = (row: any) => {
-    Modal.confirm({
-      title: "Confirm",
-      icon: <ExclamationCircleOutlined />,
-      content: "Are you sure to delete " + row.name + "?",
-      okText: "Delete",
-      cancelText: "Cancel",
-      onOk() {
-        deleteProfile(row._id);
+  const onViewDetail = (row: any) => {
+    navigate(row._id, {
+      state: {
+        ...searchValues,
+        month: searchValues.month.toDate(),
+        size: pagination.pageSize,
+        page: pagination.current,
       },
     });
   };
 
-  const deleteProfile = async (_id: string) => {
-    let res = await profileService.deleteProfile(_id);
-    if (res.status) {
-      message.success(res.message);
-      onReloadData();
-    } else {
-      message.error(res.message);
-    }
-  };
-
-  const getData = async (values?: object) => {
+  const getData = async (values?: any) => {
     setIsLoading(true);
-    let res = await profileService.getProfiles(values);
+    const body = {
+      ...values,
+      month: (values.month as Moment).startOf("month").format("YYYY-MM"),
+    };
+    let res = await attendanceService.getAttendance(body);
     setIsLoading(false);
     if (res.status) {
       let data = res.data;
@@ -146,40 +146,41 @@ const ProfileManagement: React.FC = () => {
     });
   };
 
-  const onReloadData = (page?: number) => {
-    getData({
-      ...searchValues,
-      size: pagination.pageSize,
-      page: page ? page : pagination.current,
-    });
-  };
-
   useEffect(() => {
-    getData();
+    let query: any = { month: moment() };
+    if (location.state) {
+      query = location.state;
+      query.month = moment(query.month);
+      form.setFieldsValue(query);
+    }
+    getData(query);
   }, []);
 
   return (
-    <div className="profile-management">
-      <AddEditModal
-        data={modalData}
-        onClose={() => setModalData(null)}
-        onReload={onReloadData}
-      />
+    <div className="attendance-information">
       <Card
-        title="Profile Management"
+        title="Attendance Information"
         extra={
           <Button
             type="primary"
-            icon={<UserAddOutlined />}
-            onClick={() => setModalData({})}
+            icon={<DownloadOutlined />}
+            onClick={() => console.log("Export")}
           >
-            New Profile
+            Export
           </Button>
         }
         bordered={false}
       >
         <Row style={{ marginBottom: "20px" }} justify="end">
-          <Form layout="inline" onFinish={onSearch}>
+          <Form
+            form={form}
+            layout="inline"
+            onFinish={onSearch}
+            initialValues={searchValues}
+          >
+            <Form.Item name="month" label="Month">
+              <DatePicker picker="month" />
+            </Form.Item>
             <Form.Item name="name" label="Name">
               <Input placeholder="Ex: Nguyen Van A" />
             </Form.Item>
