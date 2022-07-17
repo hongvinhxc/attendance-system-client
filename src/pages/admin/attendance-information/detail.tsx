@@ -4,8 +4,6 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 import {
-  Badge,
-  BadgeProps,
   Button,
   Calendar,
   Card,
@@ -64,8 +62,6 @@ const AttendanceDetail = () => {
     let leaveTime = "Missing";
 
     if (!!Object.keys(item).length && !item.is_absence) {
-      console.log(item);
-
       arriveTime = item.is_not_checkin
         ? arriveTime
         : moment(item.attendance_times[0]).format("HH:mm:ss");
@@ -165,7 +161,7 @@ const AttendanceDetail = () => {
                   </Button>
                   <div className="current-month">{currentMonth}</div>
                   <Button
-                    disabled={now == currentMonth}
+                    disabled={now === currentMonth}
                     onClick={() => onChangeMonth(1)}
                     className="btn-next"
                   >

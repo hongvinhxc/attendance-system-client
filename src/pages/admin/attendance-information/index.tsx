@@ -155,6 +155,7 @@ const ProfileManagement: React.FC = () => {
       form.setFieldsValue(query);
     }
     getData(query);
+    // eslint-disable-next-line
   }, []);
 
   const disabledDate: RangePickerProps['disabledDate'] = current => {

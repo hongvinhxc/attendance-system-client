@@ -3,6 +3,7 @@ import {
   ClockCircleOutlined,
   KeyOutlined,
   TeamOutlined,
+  ToolOutlined,
 } from "@ant-design/icons";
 import { SelectInfo } from "rc-menu/lib/interface";
 import { Button, Col, MenuProps, message, Modal, Row } from "antd";
@@ -44,6 +45,11 @@ const items: MenuItem[] = [
       "Attendance",
       <ClockCircleOutlined />
     ),
+    getItem(
+      <NavLink to="/admin/working-time">Working time</NavLink>,
+      "Working time",
+      <ToolOutlined />
+    ),
   ]),
   getItem(
     <NavLink to="/admin/change-password">Change password</NavLink>,
@@ -57,6 +63,7 @@ const rootSubmenuKeys = ["Management"];
 const menuMap: any = {
   "profile-management": ["Profile", "Management"],
   "attendance-information": ["Attendance", "Management"],
+  "working-time": ["Working time", "Management"],
   "change-password": ["Change password"],
 };
 
@@ -71,6 +78,7 @@ function Main() {
   useEffect(() => {
     const paths = location.pathname.split("/");
     setOpenKeys([menuMap[paths[2]]?.[1] || "Management"]);
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
