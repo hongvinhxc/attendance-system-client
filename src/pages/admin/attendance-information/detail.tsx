@@ -58,8 +58,8 @@ const AttendanceDetail = () => {
   const dateFullCellRender = (value: Moment) => {
     if (!profile) return;
     const currentDate = value.format("YYYY-MM-DD");
-    const item: any = profile.calendar[currentDate];
-    if (!item) return;
+    let item: any = profile.calendar[currentDate];
+    if (!item) item = {};
     let arriveTime = "Missing";
     let leaveTime = "Missing";
 
@@ -150,6 +150,7 @@ const AttendanceDetail = () => {
             const now = value.clone().add(month, "months");
             onChange(now);
           };
+          const now = moment().format("YYYY - MM");
           return (
             <Row justify="space-between" style={{ marginBottom: 20 }}>
               <Col>{profile?.name}</Col>
@@ -163,7 +164,11 @@ const AttendanceDetail = () => {
                     Previous
                   </Button>
                   <div className="current-month">{currentMonth}</div>
-                  <Button onClick={() => onChangeMonth(1)} className="btn-next">
+                  <Button
+                    disabled={now == currentMonth}
+                    onClick={() => onChangeMonth(1)}
+                    className="btn-next"
+                  >
                     Next
                     <RightOutlined />
                   </Button>

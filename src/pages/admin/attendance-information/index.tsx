@@ -22,6 +22,7 @@ import React, { useEffect, useState } from "react";
 import * as attendanceService from "services/attendance";
 import "./style.scss";
 import { useLocation, useNavigate } from "react-router-dom";
+import { RangePickerProps } from "antd/lib/date-picker";
 
 const ProfileManagement: React.FC = () => {
   const navigate = useNavigate();
@@ -61,19 +62,19 @@ const ProfileManagement: React.FC = () => {
       key: "position",
     },
     {
-      title: "Ngày nghỉ",
+      title: "Absence",
       dataIndex: "absence",
       key: "",
       align: "center" as AlignType,
     },
     {
-      title: "Đi muộn",
+      title: "Arrive late",
       dataIndex: "late",
       key: "late",
       align: "center" as AlignType,
     },
     {
-      title: "Về sớm",
+      title: "Leave early",
       dataIndex: "early",
       key: "early",
       align: "center" as AlignType,
@@ -156,6 +157,10 @@ const ProfileManagement: React.FC = () => {
     getData(query);
   }, []);
 
+  const disabledDate: RangePickerProps['disabledDate'] = current => {
+    return current && current > moment().endOf('day');
+  };
+
   return (
     <div className="attendance-information">
       <Card
@@ -179,7 +184,7 @@ const ProfileManagement: React.FC = () => {
             initialValues={searchValues}
           >
             <Form.Item name="month" label="Month">
-              <DatePicker picker="month" />
+              <DatePicker picker="month" disabledDate={disabledDate}/>
             </Form.Item>
             <Form.Item name="name" label="Name">
               <Input placeholder="Ex: Nguyen Van A" />
