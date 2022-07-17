@@ -3,15 +3,7 @@ import {
   LeftOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-import {
-  Button,
-  Calendar,
-  Card,
-  Col,
-  message,
-  Popover,
-  Row,
-} from "antd";
+import { Button, Calendar, Card, Col, message, Popover, Row } from "antd";
 import moment, { Moment } from "moment";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -62,14 +54,16 @@ const AttendanceDetail = () => {
     let leaveTime = "Missing";
 
     if (!!Object.keys(item).length && !item.is_absence) {
-      arriveTime = item.is_not_checkin
-        ? arriveTime
-        : moment(item.attendance_times[0]).format("HH:mm:ss");
-      leaveTime = item.is_not_checkin
-        ? arriveTime
-        : moment(
-            item.attendance_times[item.attendance_times.length - 1]
-          ).format("HH:mm:ss");
+      if (item.attendance_times.length > 1) {
+        arriveTime = moment(item.attendance_times[0]).format("HH:mm:ss");
+        leaveTime = moment(item.attendance_times[1]).format("HH:mm:ss");
+      }
+
+      if (item.attendance_times.length === 1 && item.is_not_checkout) {
+        arriveTime = moment(item.attendance_times[0]).format("HH:mm:ss");
+      } else if (item.attendance_times.length === 1 && item.is_not_checkin) {
+        leaveTime = moment(item.attendance_times[0]).format("HH:mm:ss");
+      }
     }
     return (
       <Popover
