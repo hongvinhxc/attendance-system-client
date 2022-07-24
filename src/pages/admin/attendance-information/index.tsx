@@ -1,5 +1,4 @@
 import {
-  DownloadOutlined,
   EyeOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
@@ -23,6 +22,7 @@ import * as attendanceService from "services/attendance";
 import "./style.scss";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RangePickerProps } from "antd/lib/date-picker";
+import ExportModal from "../export-report/exportModal";
 
 const ProfileManagement: React.FC = () => {
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ const ProfileManagement: React.FC = () => {
       width: 50,
       align: "center" as AlignType,
       render: (text: string, record: object, index: number) => {
-        return (pagination.current - 1) * pagination.pageSize + index + 1
+        return (pagination.current - 1) * pagination.pageSize + index + 1;
       },
     },
     {
@@ -158,23 +158,15 @@ const ProfileManagement: React.FC = () => {
     // eslint-disable-next-line
   }, []);
 
-  const disabledDate: RangePickerProps['disabledDate'] = current => {
-    return current && current > moment().endOf('day');
+  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
+    return current && current > moment().endOf("day");
   };
 
   return (
     <div className="attendance-information">
       <Card
         title="Attendance Information"
-        extra={
-          <Button
-            type="primary"
-            icon={<DownloadOutlined />}
-            onClick={() => console.log("Export")}
-          >
-            Export
-          </Button>
-        }
+        extra={<ExportModal />}
         bordered={false}
       >
         <Row style={{ marginBottom: "20px" }} justify="end">
@@ -185,7 +177,7 @@ const ProfileManagement: React.FC = () => {
             initialValues={searchValues}
           >
             <Form.Item name="month" label="Month">
-              <DatePicker picker="month" disabledDate={disabledDate}/>
+              <DatePicker picker="month" disabledDate={disabledDate} />
             </Form.Item>
             <Form.Item name="name" label="Name">
               <Input placeholder="Ex: Nguyen Van A" />

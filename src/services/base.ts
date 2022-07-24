@@ -17,7 +17,8 @@ function build_request_url(path: string, params: Object) {
 async function request(
   requestInfo: RequestInfo,
   method: string,
-  payload: Object | null = null
+  payload: Object | null = null,
+  type = "json"
 ) {
   let requestInit: RequestInit = {
     method: method,
@@ -36,7 +37,7 @@ async function request(
   }
   let res = await fetch(requestInfo, requestInit);
   if (res.status === 500) {
-    return { status: false, message: "Internal Server Error" }
+    return { status: false, message: "Internal Server Error" };
   }
   if (res.status === 401) {
     window.location.href = "/login";
@@ -46,6 +47,23 @@ async function request(
     return {
       status: false,
       message: data.message.json,
+    };
+  }
+
+  if (type === "blob") {
+    let filename: any = res.headers.get("content-disposition");
+    console.log(res);
+    
+    filename = filename.split("filename=")[1];
+    res.blob().then((blob) => {
+      let a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.setAttribute("download", filename);
+      a.click();
+    });
+    return {
+      status: true,
+      message: "Downloaded file " + filename,
     };
   }
   return res.json();
@@ -74,4 +92,15 @@ function del(path: string) {
   return request(requestInfo, "DELETE");
 }
 
-export { get, post, put, del };
+function download(path: string, params: Object = {}, method: string = "GET") {
+  if (method === "GET") {
+    let requestInfo = build_request_url(path, params);
+    return request(requestInfo, method, null, "blob");
+  }
+  let host = getHost();
+  let requestInfo = `${host}/${path}`;
+
+  return request(requestInfo, method, params, "blob");
+}
+
+export { get, post, put, del, download };

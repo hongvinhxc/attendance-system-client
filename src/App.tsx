@@ -10,6 +10,7 @@ import ChangePassword from "pages/admin/change-password";
 import AttendanceInformation from "pages/admin/attendance-information";
 import AttendanceDetail from "pages/admin/attendance-information/detail";
 import WorkingTime from "pages/admin/working-time";
+import ExportReport from "pages/admin/export-report";
 
 function RequireAuth({ children }: { children: JSX.Element }) {
   let auth = useContext(AuthContext);
@@ -59,6 +60,7 @@ function App() {
               <Route path=":id" element={<AttendanceDetail />}/>
             </Route>
             <Route path="/admin/working-time" element={<WorkingTime />} />
+            <Route path="/admin/export-report" element={<ExportReport />} />
             <Route path="/admin/change-password" element={<ChangePassword />} />
             <Route path="/admin" element={<Navigate to="/admin/profile-management" replace />} />
             <Route path="/admin/*" element={<Navigate to="/admin/profile-management" replace />} />

@@ -4,6 +4,7 @@ import {
   KeyOutlined,
   TeamOutlined,
   ToolOutlined,
+  DownloadOutlined,
 } from "@ant-design/icons";
 import { SelectInfo } from "rc-menu/lib/interface";
 import { Button, Col, MenuProps, message, Modal, Row } from "antd";
@@ -52,6 +53,11 @@ const items: MenuItem[] = [
     ),
   ]),
   getItem(
+    <NavLink to="/admin/export-report">Export Report</NavLink>,
+    "Export Report",
+    <DownloadOutlined />
+  ),
+  getItem(
     <NavLink to="/admin/change-password">Change password</NavLink>,
     "Change password",
     <KeyOutlined />
@@ -65,6 +71,7 @@ const menuMap: any = {
   "attendance-information": ["Attendance", "Management"],
   "working-time": ["Working time", "Management"],
   "change-password": ["Change password"],
+  "export-report": ["Export Report"],
 };
 
 function Main() {
