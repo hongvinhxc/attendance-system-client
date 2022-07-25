@@ -1,0 +1,12 @@
+version: "3.5"
+services:
+  attendance-client:
+    image: attendance-client:latest
+    container_name: attendance-client
+    volumes:
+      - ".:/usr/src/app"
+      - "/usr/src/app/node_modules"
+    ports:
+      - "4200:4200"
+    command: >
+      bash -c "ng serve --host 0.0.0.0 --port 4200 --poll 1"
